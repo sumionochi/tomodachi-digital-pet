@@ -16,6 +16,7 @@ import {
   CardTitle,
   CardDescription,
   CardContent,
+  CardFooter,
 } from "@/components/ui/card"
 import {
   mintAsset,
@@ -586,18 +587,66 @@ export default function HomePage() {
 
   if (!account) {
     return (
-      <main className="flex items-center justify-center h-full w-full p-4">
-        <Card className="max-w-md w-full">
-          <CardHeader className="text-center flex flex-col gap-4 items-center justify-center">
-            <h1 className="text-2xl font-bold">Welcome to Tomodachi Pets</h1>
-            <CardDescription>
-              Adopt your virtual pet on the Sui blockchain. Interact, earn points, and customize your companion.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="flex flex-col space-y-4 cursor-pointer">
-            <ConnectButton className="w-full cursor-pointer" />
-          </CardContent>
-        </Card>
+      <main className="min-h-screen flex flex-col items-center justify-center w-full p-4">
+        <div className="flex flex-col items-center justify-center flex-1 w-full">
+          <Card className="max-w-md w-full">
+            <CardHeader className="text-center flex flex-col gap-4 items-center justify-center">
+              <h1 className="text-2xl font-bold">Welcome to Tomodachi Pets</h1>
+              <CardDescription>
+                Adopt your virtual pet on the Sui blockchain. Interact, earn points, and customize your companion.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="flex flex-col space-y-4 cursor-pointer">
+              <ConnectButton className="w-full cursor-pointer" />
+            </CardContent>
+            <CardFooter>
+              <div className="flex flex-col md:flex-row gap-4 w-full max-w-md items-center justify-center">
+                <a
+                  href="https://github.com/sumionochi/tomodachi-digital-pet"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex flex-col items-start justify-between p-4 border rounded-xl bg-white dark:bg-muted shadow-sm hover:shadow transition group flex-1 min-h-[110px] w-full"
+                  style={{ minWidth: 0 }}
+                >
+                  <div className="flex items-center mb-2">
+                    <img
+                      src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+                      alt="GitHub Logo"
+                      className="w-7 h-7 mr-2 rounded"
+                    />
+                    <div className="font-bold group-hover:underline text-[#859900] text-lg leading-tight">
+                      Tomodachi Main Page Repo
+                    </div>
+                  </div>
+                  <div className="text-xs text-muted-foreground ml-9">
+                    Public repository of main site
+                  </div>
+                </a>
+                <a
+                  href="https://github.com/sumionochi/tomodachi-digital-pet-extension"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex flex-col items-start justify-between p-4 border rounded-xl bg-white dark:bg-muted shadow-sm hover:shadow transition group flex-1 min-h-[110px] w-full"
+                  style={{ minWidth: 0 }}
+                >
+                  <div className="flex items-center mb-2">
+                    <img
+                      src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+                      alt="GitHub Logo"
+                      className="w-7 h-7 mr-2 rounded"
+                    />
+                    <div className="font-bold group-hover:underline text-[#859900] text-lg leading-tight">
+                      Tomodachi Extension Repo
+                    </div>
+                  </div>
+                  <div className="text-xs text-muted-foreground ml-9">
+                    Public repository of browser extension
+                  </div>
+                </a>
+              </div>
+            </CardFooter>
+          </Card>
+        </div> 
       </main>
     )
   }
@@ -671,7 +720,12 @@ export default function HomePage() {
                 <Button
                   size="default"
                   onClick={handleCheckIn}
-                  disabled={loading || !canCheckIn}
+                  disabled={
+                    loading ||
+                    !canCheckIn ||
+                    !quizDone ||
+                    quizAnswers.some(a => a === null)
+                  }
                   className="cursor-pointer"
                 >
                   {canCheckIn ? "Daily Check-In" : `Check in ${Math.ceil((lastCheckIn + 86400 - now) / 3600)} hours`}
@@ -708,7 +762,12 @@ export default function HomePage() {
             <Button
               size="default"
               onClick={handleCheckIn}
-              disabled={loading || !canCheckIn}
+              disabled={
+                loading ||
+                !canCheckIn ||
+                !quizDone ||
+                quizAnswers.some(a => a === null)
+              }
               className="cursor-pointer"
             >
               {canCheckIn ? "Daily Check-In" : `Check in ${Math.ceil((lastCheckIn + 86400 - now) / 3600)} hours`}
@@ -838,6 +897,50 @@ export default function HomePage() {
   </AnimatePresence>
             </Collapsible>
 
+              <div className="flex mt-8 flex-col md:flex-row gap-4 mb-6">
+                <a
+                  href="https://github.com/sumionochi/tomodachi-digital-pet"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center p-3 border rounded-lg bg-white dark:bg-muted shadow-sm hover:shadow transition group"
+                  style={{ minWidth: "0", flex: 1 }}
+                >
+                  <img
+                    src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+                    alt="GitHub Logo"
+                    className="w-8 h-8 mr-3 rounded"
+                  />
+                  <div>
+                    <div className="font-semibold group-hover:underline text-primary">
+                      Tomodachi Main Page Repo
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      Public repository of main site
+                    </div>
+                  </div>
+                </a>
+                <a
+                  href="https://github.com/sumionochi/tomodachi-digital-pet-extension"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center p-3 border rounded-lg bg-white dark:bg-muted shadow-sm hover:shadow transition group"
+                  style={{ minWidth: "0", flex: 1 }}
+                >
+                  <img
+                    src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+                    alt="GitHub Logo"
+                    className="w-8 h-8 mr-3 rounded"
+                  />
+                  <div>
+                    <div className="font-semibold group-hover:underline text-primary">
+                      Tomodachi Extension Repo
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      Public repository of browser extension
+                    </div>
+                  </div>
+                </a>
+              </div>
 
              <div className="flex w-full rounded-md border bg-muted mt-8">
                 <Button

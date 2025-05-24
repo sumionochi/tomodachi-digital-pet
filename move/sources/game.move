@@ -117,7 +117,7 @@ module tomodachiaddress::game {
         let sender = tx_context::sender(ctx);
         let already_exists = table::contains(&scores.scores, sender);
         assert!(!already_exists, EAlreadyRegistered);
-        table::add(&mut scores.scores, sender, 100);
+        table::add(&mut scores.scores, sender, 150);
     }
 
     // === DAILY CHECK-IN ===
