@@ -731,99 +731,113 @@ export default function HomePage() {
         {activeTab === "home" && (
           <div>
             <Collapsible open={introOpen} onOpenChange={setIntroOpen}>
-              <CollapsibleTrigger asChild>
-                <Card className="cursor-pointer flex flex-row justify-between items-center">
-                  <CardHeader className="w-full">
-                    <h1 className="text-2xl font-bold">
-                      Welcome to Tomodachi Pets: A Digital Pet Game & Browser Companion
-                    </h1>
-                    <CardDescription>
-                      Your AI-powered, on-chain virtual pet playground — now with a live browser pet extension!
-                    </CardDescription>
-                  </CardHeader>
-                  <div className="pr-4">
-                    {introOpen ? (
-                      <ChevronDown size={24} />
-                    ) : (
-                      <ChevronRight size={24} />
-                    )}
-                  </div>
-                </Card>
-              </CollapsibleTrigger>
+  <CollapsibleTrigger asChild>
+    <Card className="cursor-pointer flex flex-row justify-between items-center">
+      <CardHeader className="w-full">
+        <h1 className="text-2xl font-bold">
+          Welcome to Tomodachi Pets: A Digital Pet Game & Browser Companion
+        </h1>
+        <CardDescription>
+          Your AI-powered, on-chain virtual pet playground — now with Daily Quizzes and a live browser pet extension!
+        </CardDescription>
+      </CardHeader>
+      <div className="pr-4">
+        {introOpen ? (
+          <ChevronDown size={24} />
+        ) : (
+          <ChevronRight size={24} />
+        )}
+      </div>
+    </Card>
+  </CollapsibleTrigger>
 
-              <AnimatePresence initial={false}>
-                {introOpen && (
-                  <motion.div
-                    key="intro"
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.3, ease: "easeInOut" }}
-                  >
-                    <CollapsibleContent forceMount>
-                      <Card className="mt-4">
-                        <CardContent>
-                          <p className="mb-4">
-                            Tomodachi Pets lets you <strong>draw or prompt</strong> custom pet accessories, mint them as NFTs on Sui,
-                            and <strong>bundle</strong> them onto your digital pet — all with full on-chain composability. <br />
-                            <span className="text-blue-700 font-semibold">
-                              Now with a Chrome Extension: keep your pet and its assets following your cursor as you browse!
-                            </span>
-                          </p>
+  <AnimatePresence initial={false}>
+    {introOpen && (
+      <motion.div
+        key="intro"
+        initial={{ height: 0, opacity: 0 }}
+        animate={{ height: "auto", opacity: 1 }}
+        exit={{ height: 0, opacity: 0 }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
+      >
+        <CollapsibleContent forceMount>
+          <Card className="mt-4">
+            <CardContent>
+              <p className="mb-4">
+                Tomodachi Pets lets you <strong>draw or prompt</strong> custom pet accessories, mint them as NFTs on Sui,
+                and <strong>bundle</strong> them onto your digital pet — all with full on-chain composability. <br />
+                <span className="text-blue-700 font-semibold">
+                  Now featuring Daily Quizzes and a Chrome Extension: keep your pet and its assets following your cursor as you browse!
+                </span>
+              </p>
 
-                          <h3 className="text-lg font-medium mb-2">How It Works</h3>
-                          <ol className="list-decimal list-inside space-y-2 mb-4">
-                            <li>
-                              <strong>Sketch or Type</strong> — draw an accessory, or give a text prompt (e.g. "Ghibli fluffy cat")
-                            </li>
-                            <li>
-                              <strong>AI-Gen Service</strong> — uses GPT-Image-1 to generate a transparent PNG
-                            </li>
-                            <li>
-                              <strong>Walrus Storage</strong> — stores your image, returns a URL
-                            </li>
-                            <li>
-                              <strong>Mint Accessory</strong> — spend points to mint that image as an Asset NFT
-                            </li>
-                            <li>
-                              <strong>Create & Customize Pet</strong> — mint your pet, equip/unequip assets dynamically
-                            </li>
-                          </ol>
+              <h3 className="text-lg font-medium mb-2">How It Works</h3>
+              <ol className="list-decimal list-inside space-y-2 mb-4">
+                <li>
+                  <strong>Sketch or Type</strong> — draw an accessory, or give a text prompt (e.g. "Ghibli fluffy cat")
+                </li>
+                <li>
+                  <strong>AI-Gen Service</strong> — uses GPT-Image-1 to generate a transparent PNG
+                </li>
+                <li>
+                  <strong>Walrus Storage</strong> — stores your image, returns a URL
+                </li>
+                <li>
+                  <strong>Mint Accessory</strong> — spend points to mint that image as an Asset NFT
+                </li>
+                <li>
+                  <strong>Create & Customize Pet</strong> — mint your pet, equip/unequip assets dynamically
+                </li>
+              </ol>
 
-                          <h3 className="text-lg font-medium mb-2">Browser Extension: Your Pet Follows You!</h3>
-                          <ul className="list-disc list-inside space-y-2 mb-4">
-                            <li>
-                              <strong>Live Pet Cursor:</strong> Your pet and selected assets orbit your cursor on any website!
-                            </li>
-                            <li>
-                              <strong>Fully Customizable:</strong> Choose which assets to display, including static and animated accessories.
-                            </li>
-                            <li>
-                              <strong>Frame-by-Frame Animation:</strong> Animated assets (spritesheets) play smoothly at 4 frames per second.
-                            </li>
-                            <li>
-                              <strong>User Control:</strong> Toggle visibility, asset rotation, and animation speed directly from the extension popup.
-                            </li>
-                          </ul>
+              <h3 className="text-lg font-medium mb-2">Daily Quiz: Learn & Earn</h3>
+              <ul className="list-disc list-inside space-y-2 mb-4">
+                <li>
+                  <strong>Test Your Knowledge:</strong> Every day, answer 3 fresh quizzes to unlock your daily reward.
+                </li>
+                <li>
+                  <strong>Required for Check-In:</strong> Complete the daily quiz to enable your Daily Check-In and +2 claim points!
+                </li>
+                <li>
+                  <strong>Quizzes Refresh Daily:</strong> Each day brings new, random questions so you can keep learning and earning.
+                </li>
+              </ul>
 
-                          <h3 className="text-lg font-medium mb-2">Game Loop & Rewards</h3>
-                          <ul className="list-disc list-inside space-y-2">
-                            <li>📅 <strong>Daily Check-In:</strong> earn points every day</li>
-                            <li>🏆 <strong>Spend Points:</strong> mint unique accessories (10 pts each)</li>
-                            <li>🎨 <strong>Express Yourself:</strong> build a one-of-a-kind pet with your own designs</li>
-                            <li>🔄 <strong>Composable NFTs:</strong> equip, unequip, or swap assets anytime</li>
-                          </ul>
+              <h3 className="text-lg font-medium mb-2">Browser Extension: Your Pet Follows You!</h3>
+              <ul className="list-disc list-inside space-y-2 mb-4">
+                <li>
+                  <strong>Live Pet Cursor:</strong> Your pet and selected assets orbit your cursor on any website!
+                </li>
+                <li>
+                  <strong>Fully Customizable:</strong> Choose which assets to display, including static and animated accessories.
+                </li>
+                <li>
+                  <strong>Frame-by-Frame Animation:</strong> Animated assets (spritesheets) play smoothly at 4 frames per second.
+                </li>
+                <li>
+                  <strong>User Control:</strong> Toggle visibility, asset rotation, and animation speed directly from the extension popup.
+                </li>
+              </ul>
 
-                          <p className="mt-4 text-sm text-muted-foreground">
-                            All images and metadata are fully on-chain and stored in Walrus, giving you true ownership, composability, and a playground for creativity. Try the browser extension for a uniquely interactive experience!
-                          </p>
-                        </CardContent>
-                      </Card>
-                    </CollapsibleContent>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              <h3 className="text-lg font-medium mb-2">Game Loop & Rewards</h3>
+              <ul className="list-disc list-inside space-y-2">
+                <li>📅 <strong>Daily Quiz + Check-In:</strong> Complete your daily quiz and check-in to earn points every day</li>
+                <li>🏆 <strong>Spend Points:</strong> Mint unique accessories (10 pts each)</li>
+                <li>🎨 <strong>Express Yourself:</strong> Build a one-of-a-kind pet with your own designs</li>
+                <li>🔄 <strong>Composable NFTs:</strong> Equip, unequip, or swap assets anytime</li>
+              </ul>
+
+              <p className="mt-4 text-sm text-muted-foreground">
+                All images and metadata are fully on-chain and stored in Walrus, giving you true ownership, composability, and a playground for creativity. Try the browser extension and daily quizzes for a uniquely interactive experience!
+              </p>
+            </CardContent>
+          </Card>
+        </CollapsibleContent>
+      </motion.div>
+    )}
+  </AnimatePresence>
             </Collapsible>
+
 
              <div className="flex w-full rounded-md border bg-muted mt-8">
                 <Button
