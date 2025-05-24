@@ -61,6 +61,7 @@ import { Textarea } from "@/components/ui/textarea"
 import Link from "next/link"
 import { toast } from "sonner"
 import AttributeInputList from "@/components/AttributeInputList";
+import { quiz as allQuizzes } from "@/components/DailyQuiz"
 
 const Bars3Icon = ({ size = 24 }) => (
   <svg
@@ -116,7 +117,7 @@ export default function HomePage() {
   const [selectedAsset, setSelectedAsset] = useState<string | null>(null)
   const [adminUser, setAdminUser] = useState("")
   const [loading, setLoading] = useState(false)
-  const [activeTab, setActiveTab] = useState<"home"|"pets"|"assets"|"more">("home")
+  const [activeTab, setActiveTab] = useState<"home"|"dailyQuiz"|"pets"|"assets"|"more">("home")
 
   const [prompt, setPrompt] = useState<string>('');
   const [generatedB64, setGeneratedB64] = useState<string | null>(null);
@@ -155,6 +156,10 @@ export default function HomePage() {
         })()
   );
 
+  const [todayQuiz, setTodayQuiz] = useState(() => getRandomQuizzes(allQuizzes, 3));
+  const [quizAnswers, setQuizAnswers] = useState<(string | null)[]>([null, null, null])
+  const [quizDone, setQuizDone] = useState(false);
+
   const equippedAssetIds = new Set(
     Object.values(equippedAssets).flat()
   );
@@ -170,17 +175,26 @@ export default function HomePage() {
     const [w, h] = sizeOption.split("x").map(Number);
     setImgSize({ width: w, height: h });
   }, [sizeOption]);
+
+  useEffect(() => {
+    if (canCheckIn) {
+      setTodayQuiz(getRandomQuizzes(allQuizzes, 3));
+      setQuizAnswers([null, null, null]);
+      setQuizDone(false);
+    }
+  }, [canCheckIn]);
   
   const queryClient = useQueryClient();
 
   const TABS: { key: Tab; label: string }[] = [
     { key: "home",  label: "Home" },
+    { key: "dailyQuiz", label: "Daily Quiz" },
     { key: "pets",  label: "Pets" },
     { key: "assets",label: "Assets" },
     { key: "more",  label: "More" },
   ]
   
-  type Tab = "home" | "pets" | "assets" | "more"
+  type Tab = "home" | "dailyQuiz" | "pets" | "assets" | "more"
 
   useEffect(() => {
     // Refresh data when account changes
@@ -559,6 +573,16 @@ export default function HomePage() {
       setSettingScore(false);
     }
   };
+
+  function getRandomQuizzes(qArr: typeof allQuizzes, n: number) {
+    // Fisher–Yates shuffle, then slice
+    const arr = [...qArr]
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1))
+      ;[arr[i], arr[j]] = [arr[j], arr[i]]
+    }
+    return arr.slice(0, n)
+  }
 
   if (!account) {
     return (
@@ -1152,6 +1176,76 @@ export default function HomePage() {
             )}      
           </div>
         )}
+
+        {activeTab === "dailyQuiz" && (
+          <Card>
+            <CardHeader>
+              <h1 className="text-2xl font-bold">Daily Quiz</h1>
+              <CardDescription>
+                Answer today’s quizzes to unlock your daily check-in reward!
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {(!canCheckIn) && (
+                <div className="p-3 rounded bg-muted text-muted-foreground">
+                  Daily quiz will be available after {Math.ceil((lastCheckIn + 86400 - now) / 3600)} hours.
+                </div>
+              )}
+              {canCheckIn && todayQuiz.map((q, idx) => (
+                <div key={idx} className="mb-4 p-3 border rounded bg-accent/10">
+                  <div className="font-medium mb-2">{`Q${idx + 1}: ${q.question}`}</div>
+                  <div className="grid grid-cols-2 gap-2">
+                    {Object.entries(q.options).map(([opt, label]) => (
+                      <Button
+                        key={opt}
+                        size="sm"
+                        variant={quizAnswers[idx] === opt ? "default" : "outline"}
+                        className="w-full"
+                        disabled={quizDone}
+                        onClick={() => {
+                          const updated = [...quizAnswers];
+                          updated[idx] = opt;
+                          setQuizAnswers(updated);
+                          // If all answered, mark as done:
+                          if (updated.every(a => a !== null)) setQuizDone(true);
+                        }}
+                      >
+                        {opt}: {label}
+                      </Button>
+                    ))}
+                  </div>
+                  {quizDone && (
+                    <div className="mt-2 text-xs">
+                      {quizAnswers[idx] === q.answer ? (
+                        <span className="text-green-700">Correct!</span>
+                      ) : (
+                        <span className="text-red-700">
+                          Wrong (correct: {q.answer}: {q.options[q.answer]})
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))}
+
+              {/* Only show check-in button if all quiz answered and canCheckIn */}
+              <Button
+                size="lg"
+                className="w-full"
+                onClick={handleCheckIn}
+                disabled={
+                  !canCheckIn ||
+                  !quizDone ||
+                  quizAnswers.some(a => a === null) ||
+                  loading
+                }
+              >
+                {loading ? "Claiming…" : "Claim Daily Reward"}
+              </Button>
+            </CardContent>
+          </Card>
+        )}
+
 
         {activeTab === "pets" && (
           <Card>
