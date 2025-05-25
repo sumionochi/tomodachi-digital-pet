@@ -110,10 +110,106 @@ All images and metadata reside on decentralized infrastructure (Walrus + Sui), e
 At the heart of Tomodachi Pets is a Move module (`game.move`) that defines how pets and assets are created and managed on the Sui blockchain. Key aspects of the contract include:
 
 - **User Registration & Points:** A global `ScoreBoard` object tracks each player’s points (score). New users register via `create_user`, which initializes their score to 100 points. A `check_in` function implements the daily reward: it uses Sui’s clock to ensure 24 hours have passed since the last check-in, then awards +2 points and records the timestamp.
+
+
+<img width="1398" alt="image" src="https://github.com/user-attachments/assets/c0885eb2-961a-4ecc-8b4b-ec72be9651e1" /> </br>
+Figure 1: Get 10 points/scores for registering in game and continue to earn +2 points every daily check-in.
+
+<br><br>
+
+<img width="1134" alt="image" src="https://github.com/user-attachments/assets/023ce1df-45af-4153-89cc-d75dc45bc100" /> </br>
+Figure 2: Complete Daily Quiz on Sui, walrus, Move contracts to claim +2 daily check-in prize.
+
+<br><br>
+
+<img width="1075" alt="image" src="https://github.com/user-attachments/assets/85d3f5d1-e770-431c-8d4f-df9806f7ba02" /> </br>
+Figure 3: Claim Reward after completing Daily Quiz.
+
+<br><br>
+
+<img width="1244" alt="image" src="https://github.com/user-attachments/assets/390e07aa-e7d3-40fb-a6a0-c0dde48419d9" /> </br>
+Figure 4: The sui::Clock ensures that every 24hr only new +2 points for daily claim and Daily Quiz is available.
+
+<br><br>
+
 - **Pet NFTs:** A `Pet` is a Move struct with a unique name field. Players create a pet by calling `create_pet` (once per user) which mints a new `Pet` object/NFT if the name is not already taken (enforced via a `PetNames` table). Pet objects are storable, transferrable NFTs (owns itself via a UID).
+
+
+<img width="1193" alt="image" src="https://github.com/user-attachments/assets/fcc40207-ee9f-443c-af8d-7190ae4c8201" /> </br>
+Figure 5: Minting a unique pet name for which assets, animation and accessories will be equiped too.
+
+<br><br>
+
+<img width="379" alt="image" src="https://github.com/user-attachments/assets/866d3bf9-e922-42ac-a74b-f2b68196e9c6" /> </br>
+Figure 6: Here a minted pet name with unique ID.
+
+<br><br>
+
+<img width="1158" alt="image" src="https://github.com/user-attachments/assets/befbe927-fe3f-450e-b4ba-631a5b4ff0db" /> </br>
+Figure 7: Generating Assets to equip to pet name such that player can upload specific image and generate one.
+
+<br><br>
+
+<img width="886" alt="image" src="https://github.com/user-attachments/assets/1cc94f82-ef7b-4446-907f-d65618f08e35" /> </br>
+Figure 8: Utilize all the images to refine into a single pet or asset for accessory or animation.
+
+<br><br>
+
+<img width="1229" alt="image" src="https://github.com/user-attachments/assets/7a4545ff-a7fb-4990-83d2-5f432da42ec7" /> </br>
+Figure 9: Perfect combination of traits as pet static image is generated which if ready for final preview and minting.
+
+<br><br>
+
+<img width="301" alt="image" src="https://github.com/user-attachments/assets/7bdc071f-028e-404a-9f39-bbc461bfd550" /> </br>
+Figure 10: Enter Meta Data details for the NFT we are going to generate to be available for equiping to a pets name.
+
+<br><br>
+
+<img width="863" alt="image" src="https://github.com/user-attachments/assets/c225976a-c5e3-44dc-ac7f-df7ec78e60ba" /> </br>
+Figure 11: The assets of static pet is ready for equiping to unique pet name.
+
+<br><br>
+
 - **Accessory NFTs (Assets):** Accessories are represented by an `Asset` struct with rich metadata: a `name`, `description`, arbitrary `attributes` (stored as a JSON string), an `action` code and `frames` (for animation info), and importantly a `url` field that holds the **Walrus blob URL** for the image. When a user mints a new accessory via `mint_asset`, the contract deducts 10 points from their score (PRICE_ASSET = 10) and creates a new `Asset` object, storing the image URL and metadata on-chain. The new asset NFT is then transferred to the user and recorded in a `MintRecord` table under the user’s address.
+
+<img width="862" alt="image" src="https://github.com/user-attachments/assets/f32a8b76-8f4e-43d8-8c3d-3018d35fe051" /> </br>
+Figure 12: We have now generated all the accessories and animation frames for our Equipment in any Pet.
+
+<br><br>
+
+<img width="915" alt="image" src="https://github.com/user-attachments/assets/5eb0d6c3-97fe-4776-9f8c-817b4a4cb68e" /> </br>
+Figure 13: Player can download or use select to equip to any Unique Pet name.
+
+<br><br>
+
 - **Composable NFTs – Equip/Unequip:** Tomodachi Pets leverages Sui’s object composability. The Move module allows an `Asset` (accessory NFT) to be **dynamically linked** to a `Pet` object, effectively equipping the item. The `equip_asset` function attaches an asset to a pet using Sui’s **dynamic object field** mechanism. It first checks a global map to ensure no pet is already wearing that asset (each asset can only be equipped to one pet at a time), then marks it equipped and adds it as a child object of the Pet. The asset’s ownership is transferred to the Pet object (so it no longer appears in the user’s wallet directly, but as part of the Pet’s data). Conversely, `unequip_asset` removes the asset from the pet, transfers ownership of the asset NFT back to the user, and updates the tracking maps accordingly. This design showcases Sui’s native composability: the Pet is like a container that can own other NFT objects. Equip and unequip actions emit events (for potential off-chain indexing) when they occur.
+
+<img width="851" alt="image" src="https://github.com/user-attachments/assets/e39bdb13-a716-4fed-bffc-1cb19fd64687" /> </br>
+Figure 14: Select the Unique Pet name to open it for asset equipment.
+
+<br><br>
+
+<img width="1056" alt="image" src="https://github.com/user-attachments/assets/db8776db-b1de-419b-8fef-e30e66a1fa9d" /> </br>
+Figure 15: Approve and equipe multiple assets to a unique pet.
+
+<br><br>
+
+<img width="887" alt="image" src="https://github.com/user-attachments/assets/e5df5e77-9189-4880-a41c-0c4ab8f2f090" /> </br>
+Figure 16: All assets are unique to pets.
+
+<br><br>
+
 - **Admin Capabilities:** The contract also defines an `AdminCap` (held by the deployer) which, in a hackathon context, was used for testing (e.g. an `admin_set_score` function to arbitrarily set player scores).
+
+<img width="785" alt="image" src="https://github.com/user-attachments/assets/fcbab39c-cbe1-4ea6-88a3-bdd54a60954b" /> </br>
+Figure 17: Only the deployer of contract receives adminCap to set any players score at will.
+
+<br><br>
+
+<img width="1048" alt="image" src="https://github.com/user-attachments/assets/72de552e-a8d8-40ac-9c1d-8c6f5485ce56" /> </br>
+Figure 18: Insert any players score and user Address for Admin to change.
+
+<br><br>
 
 Overall, the Move contract encodes game rules (points system, unique naming, item equipping constraints) directly on-chain. Sui’s storage model (with global objects and dynamic fields) is used to ensure that a given accessory NFT cannot be duplicated or equipped on multiple pets simultaneously, etc., enforcing the game logic at the smart contract level.
 
@@ -122,15 +218,28 @@ Overall, the Move contract encodes game rules (points system, unique naming, ite
 Walrus is Mysten Labs’ decentralized storage solution for Sui, used in Tomodachi Pets to store all pet and asset images off-chain while keeping them accessible and provably linked on-chain. The web app integrates Walrus as follows:
 
 - **Uploading Images:** When an accessory image is finalized (whether drawn by the user or AI-generated), the frontend calls a Next.js API route `/api/upload`. This route takes a base64-encoded image, converts it to binary, and sends a **HTTP `PUT` request** to the Walrus **Publisher** service. The app includes Walrus configuration in env (e.g. `NEXT_PUBLIC_WALRUS_PUBLISHER_URL` for the endpoint). On success, Walrus returns a JSON containing a unique `blobId` for the stored image.
+
+<img width="1009" alt="image" src="https://github.com/user-attachments/assets/cfe39c50-6b77-49ef-aed5-50b52cf9ba19" /> </br>
+Figure 18: the finalized base64-encoded image is converted to binary -> Walrus publishes with publisher service. And player can access the image through and aggregator service.
+
+<br><br>
+
 - **Forming On-Chain URLs:** Given the returned `blobId`, the app constructs a content address (URL) that any Walrus node can serve. For example, it may combine a base URL with the blobId (e.g. `https://blobs.testnet.walrus.network/<blobId>`). This URL is then passed into the Move transaction when minting the Asset NFT. The `mint_asset` function saves this string in the Asset’s `url` field on-chain. By storing the link in the NFT, _anyone_ can retrieve the image from Walrus using that URL, and the data is content-addressed and backed by Walrus’s decentralized network.
 - **On-Chain Metadata:** In addition to the image URL, other metadata (name, description, attributes JSON) are stored directly in the Asset object on-chain. This means the full definition of each accessory NFT (image + metadata) lives in a decentralized manner (on Sui + Walrus). The README of the NFT in Sui’s object display can even include the image (if a wallet or explorer supports reading the `url` or display fields).
 - **Benefits:** Using Walrus gives the project a Web3-native way to handle assets that would be too large or costly to store directly in a Move object. It provides **decentralized content storage** (no reliance on centralized servers for images) and works seamlessly with Sui (the Walrus blobId could be verified or content-hash-checked by contracts if needed). From the user’s perspective, images load just like any URL, and behind the scenes Walrus ensures the data is distributed and available.
 
 In summary, Walrus allowed us to keep Tomodachi Pets **fully on-chain** in spirit: every pet/accessory’s image is stored in a decentralized blob and referenced in the Sui NFT, rather than just keeping a centralized URL or IPFS hash that might not be persisted. This aligns with the project’s goal of true user ownership of their pet and its assets.
 
+<img width="1030" alt="image" src="https://github.com/user-attachments/assets/78b37113-9139-4bb2-a78a-d7ce3d488e38" /> </br>
+Figure 19: Walrus responds with a blobId for our published image and hence our asset is minted.
+
+<br><br>
+
 ## AI Service Integration (GPT-Image-1 for Accessories)
 
 A standout feature of Tomodachi Pets is the **AI-generated artwork** for pet accessories. By integrating OpenAI’s image generation capabilities, the project enables users to create unique visuals for their NFTs in a fun, interactive way:
+
+<img width="873" alt="image" src="https://github.com/user-attachments/assets/4b4bd874-1443-410b-83c1-363998474d40" />
 
 - **Text-to-Image Generation:** Users can input a description of an accessory they imagine (e.g. “a red cowboy hat with gold trim” or “wizard hat with stars”). When the user clicks _Generate_, the app calls the `/api/generate` route, which uses the OpenAI SDK to request an image from the `gpt-image-1` model. The request specifies a 1024×1024 image, and a transparent background if needed (ideal for layering accessories). The OpenAI service returns a base64-encoded PNG image which the app converts to an `<img>` preview for the user.
 - **Sketch-to-Image (AI Editing):** For users who prefer drawing, Tomodachi Pets provides a canvas (built with `react-sketch-canvas` and Konva). A user can sketch an outline of an accessory (for example, drawing the shape of a hat). They can then provide a brief prompt and use the AI _edit_ feature. The app will send the sketch along with the prompt to the `/api/editPetPreview` route, which calls OpenAI’s image editing endpoint. This uses `gpt-image-1` in edit mode, sending the sketch as an input image (and an optional mask) along with the prompt. The AI then returns a new image that **retains the user’s sketch structure but applies AI-generated details**. This is perfect for users with ideas who want the AI to do the polishing – for example, drawing a rough crown and having the AI produce a shiny golden crown image.
@@ -144,6 +253,8 @@ This AI integration adds a **“wow” factor** – even non-artists can create 
 ## Core Gameplay Flow
 
 Bringing together the smart contract and off-chain logic, the core game loop can be described as follows:
+
+<img width="864" alt="image" src="https://github.com/user-attachments/assets/7d5abb91-da30-4b8d-802d-427708511557" /> </br>
 
 &#x20;_Daily engagement and creation flow in Tomodachi Pets. Each day, the user can complete a quiz and perform a check-in to earn points. Accumulated points are spent to mint new accessory NFTs. Users design accessories with the help of AI (generating images), mint them on-chain (burning points), and equip them to their Pet NFT. The Pet with its equipped assets can then be seen both in the web app and via the browser extension._
 
@@ -159,21 +270,59 @@ The loop above emphasizes **engagement**: daily activity yields points, which fu
 
 One of the most delightful features is the Tomodachi Pets **browser extension**, which brings your pet into the wider web. Once installed, the extension spawns an animated pet overlay that follows your cursor as you browse any website, providing a constant companion. Here’s how it works and what it offers:
 
-- **User Setup:** In the extension’s popup UI, the user enters their Sui address (the one holding their Pet NFT). The extension then queries the blockchain (via the local backend) to fetch the list of Pet objects owned by that address. If the user has multiple pets (in this game typically one), they can select which pet to display.
-- **Live Data Fetching:** When the user clicks “Save & Fetch” in the popup, the background script uses the address (and selected pet ID) to request pet info. It calls the local Express server’s `/api/user-pet` endpoint, passing in the address and pet ID. The server uses the Sui JavaScript client to retrieve the Pet object and any equipped Asset objects (via `suiClient.getDynamicFields` to list child assets). It then returns structured data about the pet and its assets (including the image URLs stored on-chain).
-- **Rendering the Pet:** The content script, which runs on every page, receives the pet data (via Chrome messaging or storage updates) and either creates or updates a floating `<div>` on the page that contains the pet’s image and accessory images. If the Pet NFT had an image URL (not currently, since Pet has no image field by default), it would show that; otherwise it just displays the pet’s name or a default icon as the base. Then for each _equipped_ accessory, it loads the accessory’s image (using the Walrus URL in the asset data) and renders it in the overlay as well. The assets can be styled or positioned relative to the pet – e.g. an asset might have an `action` that indicates if it should orbit around the pet or stay fixed.
-- **Following the Cursor:** The content script attaches an event listener to track mouse movements. The pet container `<div>` is absolutely positioned so that it hovers over the page content. On every `mousemove`, the script updates the container’s position to follow the cursor (with a slight offset). This makes the pet float alongside the cursor as you move.
-- **Accessory Animations:** The extension allows some simple animations. For example, if an asset NFT has multiple animation frames (the `frames` field > 1), the extension can treat the image as a sprite sheet. In the content script, if an asset is marked with `mode: "animated"`, it will create a canvas and cycle through sub-images as frames. The frame count and frame rate can come from the asset metadata (the `frames` field and perhaps an attribute). This way, a user could create an animated accessory (like fluttering wings or a blinking hat) by uploading a sprite sheet – the extension will animate it on the page.
-- **User Controls:** Through the popup, the user can configure which assets to display. The extension lists all assets (equipped or in inventory) and the user can toggle them on/off as part of the “orbit.” The extension supports showing one or multiple accessories at once; currently it cycles through selected assets one at a time (to avoid cluttering the screen). Users can also toggle the entire pet on/off quickly (there’s a hotkey Ctrl+Shift+P to hide/show the pet, implemented in the content script). All settings are saved to `chrome.storage` so they persist.
 - **Architecture:** The following diagram shows the extension’s internal message flow:
 
+![img3](https://github.com/user-attachments/assets/98585c25-f3b6-4f66-9c7b-2efe03378c6b) </br>
+
 &#x20;_Browser Extension architecture and data flow. The extension consists of a Popup UI (for user input and settings), a Background script (handling data fetch and state), and a Content script (rendering the pet on web pages). The background script communicates with a local Node.js API which fetches on-chain pet and asset data via Sui RPC. The content script listens for updates and draws the pet & accessory images on every page, following the user’s cursor. Users can toggle visibility or switch assets via the popup (messages shown by arrows)._
+
+- **User Setup:** In the extension’s popup UI, the user enters their Sui address (the one holding their Pet NFT). The extension then queries the blockchain (via the local backend) to fetch the list of Pet objects owned by that address. If the user has multiple pets (in this game typically one), they can select which pet to display.
+
+<img width="940" alt="image" src="https://github.com/user-attachments/assets/a25a5ad3-a023-44ed-8dc2-91965e593715" /> </br>
+Figure 20: Add user address and choose through the names of pets available to fetch its equipped assets.
+
+<br><br>
+
+- **Live Data Fetching:** When the user clicks “Save & Fetch” in the popup, the background script uses the address (and selected pet ID) to request pet info. It calls the local Express server’s `/api/user-pet` endpoint, passing in the address and pet ID. The server uses the Sui JavaScript client to retrieve the Pet object and any equipped Asset objects (via `suiClient.getDynamicFields` to list child assets). It then returns structured data about the pet and its assets (including the image URLs stored on-chain).
+
+<img width="949" alt="image" src="https://github.com/user-attachments/assets/2911cd21-d5ec-431f-89bd-01b41a694cc8" /> </br>
+Figure 21: The Assets are fetched and available to be picked from. Multiple assets and action can be rendered at once around the cursor.
+
+<br><br>
+
+- **Rendering the Pet:** The content script, which runs on every page, receives the pet data (via Chrome messaging or storage updates) and either creates or updates a floating `<div>` on the page that contains the pet’s image and accessory images. If the Pet NFT had an image URL (not currently, since Pet has no image field by default), it would show that; otherwise it just displays the pet’s name or a default icon as the base. Then for each _equipped_ accessory, it loads the accessory’s image (using the Walrus URL in the asset data) and renders it in the overlay as well. The assets can be styled or positioned relative to the pet – e.g. an asset might have an `action` that indicates if it should orbit around the pet or stay fixed.
+
+<img width="317" alt="image" src="https://github.com/user-attachments/assets/877eebd3-d28b-4ea4-9a15-c9b1fbc9a1d0" /> </br>
+Figure 22: Assets can be choosen between static with set duration of render or animated wich will slice the image into 4 parts to render continously 4 frames looking like the pet is performing an action like walking and eating.
+
+<br><br>
+
+<img width="796" alt="image" src="https://github.com/user-attachments/assets/cd9f15c7-fc42-4de4-bf22-a719c9a392e2" /> </br>
+Figure 23: Pet with its name and performing action of eating carrot.
+
+- **Following the Cursor:** The content script attaches an event listener to track mouse movements. The pet container `<div>` is absolutely positioned so that it hovers over the page content. On every `mousemove`, the script updates the container’s position to follow the cursor (with a slight offset). This makes the pet float alongside the cursor as you move.
+
+<img width="842" alt="image" src="https://github.com/user-attachments/assets/53450213-9a3a-4749-beeb-8223c1ffaf21" /> </br>
+Figure 24: On another site Pet with its name and performing action of walking by rendering 4 continous frames from spritsheet.
+
+<br><br>
+
+- **Accessory Animations:** The extension allows some simple animations. For example, if an asset NFT has multiple animation frames (the `frames` field > 1), the extension can treat the image as a sprite sheet. In the content script, if an asset is marked with `mode: "animated"`, it will create a canvas and cycle through sub-images as frames. The frame count and frame rate can come from the asset metadata (the `frames` field and perhaps an attribute). This way, a user could create an animated accessory (like fluttering wings or a blinking hat) by uploading a sprite sheet – the extension will animate it on the page.
+
+<img width="825" alt="image" src="https://github.com/user-attachments/assets/dc4bbda6-c35f-444c-944d-07c4cd375712" /> </br>
+Figure 25: Equip and choose another pet to perform different action and render different assets. All for players immagination.
+
+<br><br>
+
+- **User Controls:** Through the popup, the user can configure which assets to display. The extension lists all assets (equipped or in inventory) and the user can toggle them on/off as part of the “orbit.” The extension supports showing one or multiple accessories at once; currently it cycles through selected assets one at a time (to avoid cluttering the screen). Users can also toggle the entire pet on/off quickly (there’s a hotkey Ctrl+Shift+P to hide/show the pet, implemented in the content script). All settings are saved to `chrome.storage` so they persist.
 
 As shown, the extension bridges the on-chain world with a user’s browsing experience. It uses relatively simple tech (Chrome extension APIs, an Express server, Sui client calls) to achieve a whimsical result: your NFT pet is not confined to a marketplace or app – it can accompany you anywhere on the internet! This feature showcases **“experience beyond the dApp”**, adding a wow factor that is memorable for users and hackathon judges alike. It’s also a proof-of-concept for how blockchain assets can be made interactive and present in everyday web usage.
 
 ## User Flows & Journeys
 
 To ensure Tomodachi Pets is enjoyable and user-friendly, I designed clear user flows for common actions. Below are a few example journeys from the user’s perspective:
+
+<img width="1075" alt="image" src="https://github.com/user-attachments/assets/69d7bd57-ca33-4903-bc89-d1350ed0f62b" />
 
 - **🐣 Creating Your Pet:** A new user lands on the app, connects their Sui wallet, and chooses a pet name. When they hit “Create Pet,” a transaction is sent to call `create_pet`. If the name is unique, the transaction succeeds and a Pet NFT is minted into their wallet. The UI updates to show their pet’s name on the dashboard. (Under the hood, their address was also registered in the ScoreBoard with 100 starting points during registration, if not already registered).
 - **🎨 Designing and Minting an Accessory:** The user navigates to the **Assets** tab to create a new accessory. They draw a rough shape in the canvas and type “green wizard hat”. After clicking _Generate_, an AI-generated hat image appears. They refine the prompt and get an even better image on the second try. Satisfied, they click _Mint Accessory_. The app uploads the image to Walrus and calls `mint_asset`. The user confirms the transaction (burning 10 points). In seconds, their new “Wizard Hat” NFT is minted on Sui and now visible in their asset list.
@@ -186,6 +335,8 @@ Each of these flows was implemented with attention to **UX**: I use toasts and s
 ## Hackathon Pitch Highlights
 
 Tomodachi Pets is more than just a demo – it’s a **fully working prototype** that hits all the notes of the Entertainment & Culture track:
+
+<img width="1093" alt="image" src="https://github.com/user-attachments/assets/aa0935c5-d784-454e-add8-f39efcd13af2" />
 
 - **Original Concept & Fun Factor:** The project combines the nostalgia of Tamagotchi/digital pets with blockchain collectibles and AI creativity. It stands out as an original idea – instead of a typical DeFi or marketplace project, it’s a playful experience that can appeal to mainstream users. The browser extension in particular adds a delightful twist that most wouldn’t expect from an NFT hackathon project.
 - **Completeness & UX:** I aimed to deliver a complete user journey. From creating a pet, to earning points through quizzes, to minting and equipping accessories, to experiencing the pet in a browser extension – the app covers a lot of ground. The interface is designed to be approachable (no code or manual transactions needed beyond wallet clicks). For hackathon demo purposes, I also made sure to seed some quiz content and have sensible defaults to showcase the flow (e.g., initial points given). Multiple components (web app + extension) work in tandem, demonstrating good polish.
