@@ -1,8 +1,11 @@
-# Tomodachi Pets – AI-Powered On-Chain Virtual Pet Playground
+# Tomodachi Pets Game – AI-Powered On-Chain Virtual Pet Playground
 
-Extension - https://github.com/sumionochi/tomodachi-digital-pet-extension
-
-Main Page of Action - https://github.com/sumionochi/tomodachi-digital-pet
+| Resource          | Link                                                                                             |
+| ----------------- | ------------------------------------------------------------------------------------------------ |
+| Main Web App      | [Tomodachi Digital Pet](https://github.com/sumionochi/tomodachi-digital-pet)                     |
+| Browser Extension | [Tomodachi Digital Pet Extension](https://github.com/sumionochi/tomodachi-digital-pet-extension) |
+| Documentation     | [Tomodachi Pets Documentation](https://github.com/sumionochi/tomodachi-pets-documentation)       |
+| Demo Video        | [Demo Video on YouTube](https://www.youtube.com/watch?v=E1rkjZkNquI)                             |
 
 ## Project Summary
 
