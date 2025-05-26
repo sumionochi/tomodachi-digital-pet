@@ -94,6 +94,8 @@ The system is composed of several interacting components: the user-facing web ap
 
 ![system design](https://github.com/user-attachments/assets/663b441d-7fa3-4c8e-bc8e-a48571e09ec6)
 
+![Static to dynamic](https://github.com/user-attachments/assets/b408bba6-de0f-434b-86c1-6ea86ed4a623)
+
 &#x20;_System architecture of Tomodachi Pets. The Next.js web app interacts with the Sui blockchain (smart contracts) for game actions and uses OpenAI for image generation. Images are uploaded to Walrus decentralized storage, and the resulting links are stored on-chain. A browser extension (with a local backend) fetches on-chain data via Sui RPC to display the pet across webpages._
 
 In this architecture, the **Web App** is the central hub for user interactions, handling gameplay logic in the UI and coordinating between blockchain and off-chain services:
